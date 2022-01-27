@@ -50,6 +50,15 @@ async function run() {
           const result = await purchaseCollection.insertOne(newUser);
           res.json(result);
         })
+            //delete 
+      app.delete('/myOrders/:id',async (req, res) => {
+        const id = req.params.id;
+        console.log(id);
+        const query = {_id:ObjectId(id)}
+        const result = await purchaseCollection.deleteOne(query);
+        console.log("Delete id",result);
+        res.json(result)
+      })
 
   } finally {
     // await client.close();
