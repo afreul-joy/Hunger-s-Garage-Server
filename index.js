@@ -23,6 +23,7 @@ async function run() {
     console.log("dbms connected");
     const database = client.db("Hungry");
     const mealsCollection = database.collection("Meals");
+    const purchaseCollection = database.collection("purchase");
 
       // get 
       app.get("/meals", async (req, res) => {
@@ -37,7 +38,13 @@ async function run() {
       const query = {_id:ObjectId(id)}
       const product = await mealsCollection.findOne(query)
       res.send(product)
-    })
+      })
+      //post Api
+        app.post("/purchase",async (req, res) => {
+          const newUser = req.body;
+          const result = await purchaseCollection.insertOne(newUser);
+          res.json(result);
+        })
 
   } finally {
     // await client.close();
