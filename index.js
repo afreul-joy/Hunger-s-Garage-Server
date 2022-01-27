@@ -31,6 +31,11 @@ async function run() {
         const product = await cursor.toArray();
         res.json(product);
       })
+      app.get("/myOrders", async (req, res) => {
+        const cursor = purchaseCollection.find({});
+        const product = await cursor.toArray();
+        res.json(product);
+      })
       //get single id
       app.get("/meals/:id", async (req, res) => {
       const id = req.params.id 
