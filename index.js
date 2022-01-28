@@ -44,13 +44,42 @@ async function run() {
       const product = await mealsCollection.findOne(query)
       res.send(product)
       })
+      //single id for update/edit
+      app.get("/myOrders/:id", async (req, res) => {
+        const id = req.params.id 
+        console.log("id is",id);
+        const query = {_id:ObjectId(id)}
+        const product = await purchaseCollection.findOne(query)
+        res.send(product)
+        })
       //post Api
         app.post("/purchase",async (req, res) => {
           const newUser = req.body;
           const result = await purchaseCollection.insertOne(newUser);
           res.json(result);
         })
-            //delete 
+            //Put
+    app.put('/myOrders/:id',async (req, res)=>{
+      const id = req.params.id
+      const updatedUser = req.body
+      const filter = {_id:ObjectId(id)}
+
+      const options = { upsert: true };
+
+      const updateDoc = {
+        $set: {
+          name:updatedUser.name,
+          email:updatedUser.email,
+          phone:updatedUser.phone,
+          address:updatedUser.address
+        },
+      };
+      const result = await purchaseCollection.updateOne(filter, updateDoc, options);``
+
+      console.log("updating user", result);
+      res.json(result)
+    })
+      //delete 
       app.delete('/myOrders/:id',async (req, res) => {
         const id = req.params.id;
         console.log(id);
