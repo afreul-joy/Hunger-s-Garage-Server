@@ -31,8 +31,18 @@ async function run() {
         const product = await cursor.toArray();
         res.json(product);
       })
-      app.get("/myOrders", async (req, res) => {
+      // get api  All Orders 
+      app.get("/allOrders", async (req, res) => {
         const cursor = purchaseCollection.find({});
+        const product = await cursor.toArray();
+        res.json(product);
+      })
+      //get api filtering by email address 
+      app.get("/myOrders", async (req, res) => {
+        const email=req.query.email;
+        const query = {email:email}
+        console.log(query);
+        const cursor = purchaseCollection.find(query);
         const product = await cursor.toArray();
         res.json(product);
       })
@@ -82,7 +92,7 @@ async function run() {
       //delete 
       app.delete('/myOrders/:id',async (req, res) => {
         const id = req.params.id;
-        console.log(id);
+        // console.log(id);
         const query = {_id:ObjectId(id)}
         const result = await purchaseCollection.deleteOne(query);
         console.log("Delete id",result);
