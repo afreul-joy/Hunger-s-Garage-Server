@@ -101,8 +101,21 @@ async function run() {
       console.log("updating user", result);
       res.json(result);
     });
-    //----------PUT API UPDATE INFORMATION-----------------
-    
+    //----------PUT API FOR GOOGLE SING-IN USER -----------------
+    app.put("/users", async (req, res) => {
+      const user = req.body;
+      console.log("put", user);
+      const filter = { email: user.email };
+      const options = { upsert: true };
+      const updateDoc = { $set: user};
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      console.log("Putting user", result);
+      res.json(result);
+    });
     //----------DELETE API -----------------
     app.delete("/myOrders/:id", async (req, res) => {
       const id = req.params.id;
