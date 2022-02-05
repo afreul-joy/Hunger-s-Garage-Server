@@ -127,7 +127,7 @@ async function run() {
       console.log("Putting user", result);
       res.json(result);
     });
-    //----------PUT API ADMIN -----------------
+    //----------PUT API UPSERT MAKE ADMIN -----------------
     app.put("/users/admin", async (req, res) => {
       const user = req.body;
       console.log("put", user);
