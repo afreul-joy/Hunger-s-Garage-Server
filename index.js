@@ -66,6 +66,17 @@ async function run() {
       const product = await purchaseCollection.findOne(query);
       res.send(product);
     });
+    // ----------GET API CHECK ADMIN OR NOT BY EMAIL -----------------
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      let isAdmin = false;
+      if (user?.role === "admin") {
+        isAdmin=true;
+      }
+      res.json({ admin: isAdmin });
+    });
     //----------POST API PURCHASE/BUY NOW -----------------
     app.post("/purchase", async (req, res) => {
       const newUser = req.body;
@@ -101,13 +112,13 @@ async function run() {
       console.log("updating user", result);
       res.json(result);
     });
-    //----------PUT API FOR GOOGLE SING-IN USER -----------------
+    //----------PUT API UPSERT FOR GOOGLE SING-IN USER -----------------
     app.put("/users", async (req, res) => {
       const user = req.body;
-      console.log("put", user);
+      // console.log("put", user);
       const filter = { email: user.email };
       const options = { upsert: true };
-      const updateDoc = { $set: user};
+      const updateDoc = { $set: user };
       const result = await usersCollection.updateOne(
         filter,
         updateDoc,
@@ -116,6 +127,16 @@ async function run() {
       console.log("Putting user", result);
       res.json(result);
     });
+    //----------PUT API ADMIN -----------------
+    app.put("/users/admin", async (req, res) => {
+      const user = req.body;
+      console.log("put", user);
+      const filter = { email: user.email };
+      const updateDoc = { $set: { role: "admin" } };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+
     //----------DELETE API -----------------
     app.delete("/myOrders/:id", async (req, res) => {
       const id = req.params.id;
