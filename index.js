@@ -73,7 +73,7 @@ async function run() {
       const user = await usersCollection.findOne(query);
       let isAdmin = false;
       if (user?.role === "admin") {
-        isAdmin=true;
+        isAdmin = true;
       }
       res.json({ admin: isAdmin });
     });
@@ -83,11 +83,18 @@ async function run() {
       const result = await purchaseCollection.insertOne(newUser);
       res.json(result);
     });
+    //----------POST API ADD MEALS -----------------
+    app.post("/addMeals", async (req, res) => {
+      const newMeals = req.body;
+      console.log("POST VAI",newMeals);
+      const result = await mealsCollection.insertOne(newMeals);
+      res.json(result);
+    });
     // ----------POST API REGISTER/LOGIN USERS  -----------------
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await usersCollection.insertOne(user);
-      console.log(result);
+      // console.log(result);
       res.json(result);
     });
     //----------PUT API UPDATE INFORMATION-----------------
@@ -124,7 +131,7 @@ async function run() {
         updateDoc,
         options
       );
-      console.log("Putting user", result);
+      // console.log("Putting user", result);
       res.json(result);
     });
     //----------PUT API UPSERT MAKE ADMIN -----------------
@@ -143,7 +150,7 @@ async function run() {
       // console.log(id);
       const query = { _id: ObjectId(id) };
       const result = await purchaseCollection.deleteOne(query);
-      console.log("Delete id", result);
+      // console.log("Delete id", result);
       res.json(result);
     });
   } finally {
