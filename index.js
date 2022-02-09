@@ -86,7 +86,7 @@ async function run() {
     //----------POST API ADD MEALS -----------------
     app.post("/addMeals", async (req, res) => {
       const newMeals = req.body;
-      console.log("POST VAI",newMeals);
+      console.log("POST VAI", newMeals);
       const result = await mealsCollection.insertOne(newMeals);
       res.json(result);
     });
@@ -144,7 +144,7 @@ async function run() {
       res.json(result);
     });
 
-    //----------DELETE API -----------------
+    //----------DELETE API FOR CANCEL ORDER -----------------
     app.delete("/myOrders/:id", async (req, res) => {
       const id = req.params.id;
       // console.log(id);
@@ -153,6 +153,16 @@ async function run() {
       // console.log("Delete id", result);
       res.json(result);
     });
+    //----------DELETE API FOR DELETE PRODUCT -----------------
+    app.delete("/meals/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { _id: ObjectId(id) };
+      const result = await mealsCollection.deleteOne(query);
+      console.log("Delete id", result);
+      res.json(result);
+    });
+
   } finally {
     // await client.close();
   }
