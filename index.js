@@ -63,7 +63,7 @@ async function run() {
       const id = req.params.id;
       console.log("id is", id);
       const query = { _id: ObjectId(id) };
-      const product = await purchaseCollection.findOne(query);
+      const product = await purchaseCollection.findOne(query);  
       res.send(product);
     });
     // ----------GET API CHECK ADMIN OR NOT BY EMAIL -----------------
@@ -80,6 +80,7 @@ async function run() {
     //----------POST API PURCHASE/BUY NOW -----------------
     app.post("/purchase", async (req, res) => {
       const newUser = req.body;
+      console.log(newUser);
       const result = await purchaseCollection.insertOne(newUser);
       res.json(result);
     });
@@ -142,6 +143,19 @@ async function run() {
       const updateDoc = { $set: { role: "admin" } };
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.json(result);
+    });
+    // update order status
+    app.put("/allOrders/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id)
+      const query = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: "Approved",
+        },
+      };
+      const result = await purchaseCollection.updateOne(query, updateDoc);
+      res.send(result);
     });
 
     //----------DELETE API FOR CANCEL ORDER -----------------
