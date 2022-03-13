@@ -28,6 +28,7 @@ async function run() {
     const mealsCollection = database.collection("Meals");
     const purchaseCollection = database.collection("purchase");
     const usersCollection = database.collection("users");
+    const reviewCollection = database.collection("review");
 
     //----------GET API ALL MEALS -----------------
     app.get("/meals", async (req, res) => {
@@ -77,6 +78,12 @@ async function run() {
       }
       res.json({ admin: isAdmin });
     });
+     //----------GET API ALL Review -----------------
+     app.get("/review", async (req, res) => {
+      const cursor = reviewCollection.find({});
+      const product = await cursor.toArray();
+      res.json(product);
+    });
     //----------POST API PURCHASE/BUY NOW -----------------
     app.post("/purchase", async (req, res) => {
       const newUser = req.body;
@@ -96,6 +103,13 @@ async function run() {
       const user = req.body;
       const result = await usersCollection.insertOne(user);
       // console.log(result);
+      res.json(result);
+    });
+      //----------POST API Review -----------------
+    app.post("/review", async (req, res) => {
+      const newReview = req.body;
+      // console.log(newReview);
+      const result = await reviewCollection.insertOne(newReview);
       res.json(result);
     });
     //----------PUT API UPDATE INFORMATION-----------------
@@ -173,7 +187,7 @@ async function run() {
       // console.log(id);
       const query = { _id: ObjectId(id) };
       const result = await mealsCollection.deleteOne(query);
-      console.log("Delete id", result);
+      // console.log("Delete id", result);
       res.json(result);
     });
 
