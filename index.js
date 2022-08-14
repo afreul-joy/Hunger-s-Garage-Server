@@ -34,7 +34,11 @@ async function run() {
     app.get("/meals", async (req, res) => {
       const cursor = mealsCollection.find({});
       const product = await cursor.toArray();
-      res.json(product);
+      const count = await cursor.count();
+      res.send({
+        count,
+        product
+      });
     });
     //----------GET API ALL ORDERS -----------------
     app.get("/allOrders", async (req, res) => {
