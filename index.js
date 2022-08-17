@@ -33,8 +33,16 @@ async function run() {
     //----------GET API ALL MEALS -----------------
     app.get("/meals", async (req, res) => {
       const cursor = mealsCollection.find({});
-      const product = await cursor.toArray();
+      const page = req.query.page;
+      const size = parseInt(req.query.size);
+      let product;
       const count = await cursor.count();
+      if (page) {
+          product = await cursor.skip(page*size).limit(size).toArray()
+      }
+      else{
+        const product = await cursor.toArray();
+      }
       res.send({
         count,
         product
@@ -42,7 +50,7 @@ async function run() {
     });
     //----------GET API ALL ORDERS -----------------
     app.get("/allOrders", async (req, res) => {
-      const cursor = purchaseCollection.find({});
+      const cursor = purchaseCollection.find({}); 
       const product = await cursor.toArray();
       res.json(product);
     });
