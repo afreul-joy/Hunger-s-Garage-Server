@@ -33,20 +33,8 @@ async function run() {
     //----------GET API ALL MEALS -----------------
     app.get("/meals", async (req, res) => {
       const cursor = mealsCollection.find({});
-      const page = req.query.page;
-      const size = parseInt(req.query.size);
-      let product;
-      const count = await cursor.count();
-      if (page) {
-          product = await cursor.skip(page*size).limit(size).toArray()
-      }
-      else{
-        const product = await cursor.toArray();
-      }
-      res.send({
-        count,
-        product
-      });
+      const product = await cursor.toArray();
+      res.json(product);
     });
     //----------GET API ALL ORDERS -----------------
     app.get("/allOrders", async (req, res) => {
