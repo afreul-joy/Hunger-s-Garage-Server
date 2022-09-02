@@ -15,6 +15,9 @@ require("dotenv").config();
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vljpp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 console.log(uri);
 
+// This is your test secret API key.
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
+
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -46,7 +49,7 @@ async function run() {
     app.get("/myOrders", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
-      console.log(query);
+      // console.log(query);
       const cursor = purchaseCollection.find(query);
       const product = await cursor.toArray();
       res.json(product);
@@ -54,7 +57,7 @@ async function run() {
     //----------GET API SINGLE ID -----------------
     app.get("/meals/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("id is", id);
+      // console.log("id is", id);
       const query = { _id: ObjectId(id) };
       const product = await mealsCollection.findOne(query);
       res.send(product);
@@ -62,7 +65,7 @@ async function run() {
     // ----------GET API SINGLE ID FOR UPDATE/EDIT -----------------
     app.get("/myOrders/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("id is", id);
+      // console.log("id is", id);
       const query = { _id: ObjectId(id) };
       const product = await purchaseCollection.findOne(query);  
       res.send(product);
@@ -87,14 +90,14 @@ async function run() {
     //----------POST API PURCHASE/BUY NOW -----------------
     app.post("/purchase", async (req, res) => {
       const newUser = req.body;
-      console.log(newUser);
+      // console.log(newUser);
       const result = await purchaseCollection.insertOne(newUser);
       res.json(result);
     });
     //----------POST API ADD MEALS -----------------
     app.post("/addMeals", async (req, res) => {
       const newMeals = req.body;
-      console.log("POST VAI", newMeals);
+      // console.log("POST VAI", newMeals);
       const result = await mealsCollection.insertOne(newMeals);
       res.json(result);
     });
@@ -112,6 +115,18 @@ async function run() {
       const result = await reviewCollection.insertOne(newReview);
       res.json(result);
     });
+    //----------POST Stripe -----------------
+    app.post("/create-payment-intent", async (req, res) => {
+      const paymentInfo = req.body;
+      const amount = paymentInfo.productPrice * 100;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ['card']
+      });
+      res.json({ clientSecret: paymentIntent.client_secret});
+    });
+    
     //----------PUT API UPDATE INFORMATION-----------------
     app.put("/myOrders/:id", async (req, res) => {
       const id = req.params.id;
@@ -152,7 +167,7 @@ async function run() {
     //----------PUT API UPSERT MAKE ADMIN -----------------
     app.put("/users/admin", async (req, res) => {
       const user = req.body;
-      console.log("put", user);
+      // console.log("put", user);
       const filter = { email: user.email };
       const updateDoc = { $set: { role: "admin" } };
       const result = await usersCollection.updateOne(filter, updateDoc);
@@ -190,6 +205,7 @@ async function run() {
       // console.log("Delete id", result);
       res.json(result);
     });
+
 
   } finally {
     // await client.close();
