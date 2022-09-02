@@ -130,15 +130,12 @@ async function run() {
     //----------PUT API UPDATE INFORMATION-----------------
     app.put("/myOrders/:id", async (req, res) => {
       const id = req.params.id;
-      const updatedUser = req.body;
+      const payment = req.body 
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
         $set: {
-          name: updatedUser.name,
-          email: updatedUser.email,
-          phone: updatedUser.phone,
-          address: updatedUser.address,
+          payment:payment,
         },
       };
       const result = await purchaseCollection.updateOne(
@@ -173,6 +170,24 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.json(result);
     });
+    //----------PUT STRIPE -----------------
+    // app.put("/myOrders/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const payment = req.body
+    //   const filter = { _id: ObjectId(id) };
+    //   const updateDoc = {
+    //     $set: {
+    //       payment:payment,
+    //     },
+    //   };
+    //   const result = await purchaseCollection.updateOne(
+    //     filter,
+    //     updateDoc,
+    //   );
+    //   console.log("payment result : ", result);
+    //   res.json(result);
+    // });
+
     // update order status
     app.put("/allOrders/:id", async (req, res) => {
       const id = req.params.id;
